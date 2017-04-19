@@ -68,6 +68,7 @@ public class ConexionCliente extends Thread implements Observer {
                             System.err.println("Error al cerrar los stream de entrada y salida :" + ex2.getMessage());
                         }
                     }else{
+                        mensajes.NewUserNotification(username);
                         validated=true;
                     }
                 } else {

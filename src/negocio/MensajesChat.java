@@ -30,5 +30,10 @@ public class MensajesChat extends Observable {
         // (Internamente notifyObservers llama al metodo update del observador)
         this.notifyObservers(this.getMensaje());
     }
+    public void NewUserNotification(String username){
+        this.mensaje="!"+username+" se acaba de conectar!";
+        this.setChanged();
+        this.notifyObservers(this.getMensaje());
+    }
 
 }

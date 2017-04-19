@@ -5,6 +5,8 @@
  */
 package negocio;
 
+import dao.usuarioDao;
+import interfaces.ImpUsuarioDao;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -41,6 +43,7 @@ public class ConexionCliente extends Thread implements Observer {
         boolean conectado = true;
         String username = "";
         String contraseña = "";
+        ImpUsuarioDao udao = new usuarioDao();
         // Se apunta a la lista de observadores de mensajes
         mensajes.addObserver(this);
 
@@ -51,10 +54,23 @@ public class ConexionCliente extends Thread implements Observer {
                 if (mensajeRecibido.equals("validar")) {
                     username = entradaDatos.readUTF();
                     contraseña = entradaDatos.readUTF();
+                    username = udao.validar(username, contraseña);
+                    if ("0".equals(username)) {
+                        System.err.println("Cliente con la IP " + socket.getInetAddress().getHostName() + " desconectado.");
+                        conectado = false;
+                        // Si se ha producido un error al recibir datos del cliente se cierra la conexion con el.
+                        try {
+                            salidaDatos.writeUTF("incorrecto");
+                            entradaDatos.close();
+                            salidaDatos.close();
+                        } catch (IOException ex2) {
+                            System.err.println("Error al cerrar los stream de entrada y salida :" + ex2.getMessage());
+                        }
+                    }
                 } else {
                     // Pone el mensaje recibido en mensajes para que se notifique 
                     // a sus observadores que hay un nuevo mensaje.
-                    mensajes.setMensaje(mensajeRecibido);
+                    mensajes.setMensaje(mensajeRecibido,username);
                 }
             } catch (IOException ex) {
                 System.err.println("Cliente con la IP " + socket.getInetAddress().getHostName() + " desconectado.");

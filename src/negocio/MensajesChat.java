@@ -22,8 +22,8 @@ public class MensajesChat extends Observable {
         return mensaje;
     }
     
-    public void setMensaje(String mensaje){
-        this.mensaje = mensaje;
+    public void setMensaje(String mensaje, String username){
+        this.mensaje = username+": "+mensaje;
         // Indica que el mensaje ha cambiado
         this.setChanged();
         // Notifica a los observadores que el mensaje ha cambiado y se lo pasa

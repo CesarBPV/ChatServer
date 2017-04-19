@@ -41,6 +41,7 @@ public class ConexionCliente extends Thread implements Observer {
     public void run() {
         String mensajeRecibido;
         boolean conectado = true;
+        boolean validated = false;
         String username = "";
         String contraseña = "";
         ImpUsuarioDao udao = new usuarioDao();
@@ -66,11 +67,15 @@ public class ConexionCliente extends Thread implements Observer {
                         } catch (IOException ex2) {
                             System.err.println("Error al cerrar los stream de entrada y salida :" + ex2.getMessage());
                         }
+                    }else{
+                        validated=true;
                     }
                 } else {
-                    // Pone el mensaje recibido en mensajes para que se notifique 
-                    // a sus observadores que hay un nuevo mensaje.
-                    mensajes.setMensaje(mensajeRecibido,username);
+                    if (validated) {
+                        // Pone el mensaje recibido en mensajes para que se notifique 
+                        // a sus observadores que hay un nuevo mensaje.
+                        mensajes.setMensaje(mensajeRecibido, username);
+                    }
                 }
             } catch (IOException ex) {
                 System.err.println("Cliente con la IP " + socket.getInetAddress().getHostName() + " desconectado.");
